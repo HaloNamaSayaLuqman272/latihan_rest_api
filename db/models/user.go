@@ -14,6 +14,7 @@ type User struct {
 	Username       string         `json:"username"`
 	Email          string         `json:"email" gorm:"unique"`
 	Password       string         `json:"password"`
+	PhoneNumber    string         `json:"phone_number"`
 	Address        string         `json:"address" gorm:"type:text"`
 	ProvinceID     uint           `json:"province_id"`
 	CityID         uint           `json:"city_id"`
