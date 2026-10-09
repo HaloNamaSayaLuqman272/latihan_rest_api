@@ -2,13 +2,15 @@ package users
 
 import (
 	"context"
+	"latihan_rest_api/db/models"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Service interface {
-	GetProfile(ctx context.Context, userID uint) (User, error)
-	UpdateProfile(ctx context.Context, editReq *EditProfileRequest, id uint) (User, error)
+	GetProfile(ctx context.Context, userID uuid.UUID) (models.User, error)
+	UpdateProfile(ctx context.Context, editReq *EditProfileRequest, id uuid.UUID) (models.User, error)
 }
 
 type service struct {

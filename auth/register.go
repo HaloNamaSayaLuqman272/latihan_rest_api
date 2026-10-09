@@ -12,11 +12,11 @@ type register struct {
 	repository *gorm.DB
 }
 
-func (r register) RegisterUser(ctx context.Context, registerRequest *RegisterRequest) (User, error) {
+func (r register) RegisterUser(ctx context.Context, registerRequest *RegisterRequest) (models.User, error) {
 	// ini adalah bagian password di-generate menjadi token bcrypt
 	password, err := utils.GeneratePassword(registerRequest.Password)
 	if err != nil {
-		return User{}, err
+		return models.User{}, err
 	}
 
 	user := models.User{
@@ -30,17 +30,9 @@ func (r register) RegisterUser(ctx context.Context, registerRequest *RegisterReq
 		DistrictID:  registerRequest.DistrictID,
 		Role:        models.Enduser,
 	}
-	result := r.repository.WithContext(ctx).Create(&user)
-	if err := result.Error; err != nil {
-		return User{}, err
+	if err := r.repository.WithContext(ctx).Create(&user).Error; err != nil {
+		return models.User{}, err
 	}
 
-	record := new(User)
-
-	if err := result.WithContext(ctx).Last(record).Error; err != nil {
-		// ini adalah proses data user baru disimpan ke dalam database
-		return User{}, err
-	}
-
-	return *record, nil
+	return user, nil
 }

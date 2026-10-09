@@ -41,7 +41,7 @@ func (a Auth) RegisterUser(ctx *echo.Context) error {
 		})
 	}
 
-	return ctx.JSON(http.StatusCreated, dtos.Response[auth.User]{
+	return ctx.JSON(http.StatusCreated, dtos.Response[models.User]{
 		Status:  "success",
 		Message: "user registrated",
 		Data:    user,
@@ -73,7 +73,7 @@ func (a Auth) LoginUser(ctx *echo.Context) error {
 		})
 	}
 
-	token, err := a.jwtConfig.GenerateToken(int(user.ID), models.Role(user.Role))
+	token, err := a.jwtConfig.GenerateToken(user.ID, models.Role(user.Role))
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, dtos.Response[any]{
 			Status:  "failed",

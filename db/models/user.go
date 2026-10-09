@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql/driver"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -9,11 +10,11 @@ import (
 )
 
 type User struct {
-	ID             uuid.UUID      `json:"id" form:"-" gorm:"primaryKey"`
+	ID             uuid.UUID      `json:"id" form:"-" gorm:"type:uuid;primaryKey"`
 	SessionID      string         `json:"session_id"`
 	Username       string         `json:"username" gorm:"uniqueIndex;not null"`
 	Email          string         `json:"email" gorm:"uniqueIndex;not null"`
-	Password       string         `json:"password"`
+	Password       string         `json:"-"`
 	PhoneNumber    string         `json:"phone_number"`
 	Address        string         `json:"address" gorm:"type:text"`
 	ProvinceID     uint           `json:"province_id"`
@@ -26,6 +27,14 @@ type User struct {
 	DeletedAt      gorm.DeletedAt `json:"deleted_at"`
 }
 
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	if u.ID == uuid.Nil {
+		u.ID = uuid.New()
+	}
+
+	return nil
+}
+
 type Role string
 
 const (
@@ -34,7 +43,15 @@ const (
 )
 
 func (p *Role) Scan(value any) error {
-	*p = Role(value.([]byte))
+	switch v := value.(type) {
+	case string:
+		*p = Role(v)
+	case []byte:
+		*p = Role(v)
+	default:
+		return fmt.Errorf("unsupported role type: %T", value)
+	}
+
 	return nil
 }
 

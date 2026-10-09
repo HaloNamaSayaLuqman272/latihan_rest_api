@@ -8,12 +8,13 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	echojwt "github.com/labstack/echo-jwt/v5"
 	"github.com/labstack/echo/v5"
 )
 
 type JWTCustomsClaims struct {
-	ID   int         `json:"id"`
+	ID   string      `json:"id"`
 	Role models.Role `json:"role"`
 	jwt.RegisteredClaims
 }
@@ -36,11 +37,11 @@ func (jwtConfig *JWTConfig) Init() echojwt.Config {
 	}
 }
 
-func (jwtConfig *JWTConfig) GenerateToken(userID int, role models.Role) (string, error) {
-	expire := jwt.NewNumericDate(time.Now().Local().Add(time.Minute * time.Duration(int64(jwtConfig.ExpireDuration))))
+func (jwtConfig *JWTConfig) GenerateToken(userID uuid.UUID, role models.Role) (string, error) {
+	expire := jwt.NewNumericDate(time.Now().Local().Add(time.Second * time.Duration(int64(jwtConfig.ExpireDuration))))
 
 	claims := &JWTCustomsClaims{
-		ID: userID,
+		ID: userID.String(),
 		// klaim ini milik siapa
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: expire,
@@ -73,13 +74,13 @@ func GetUser(ctx context.Context) (*JWTCustomsClaims, error) {
 	return claims, nil
 }
 
-func GetUserID(ctx context.Context) (int, error) {
+func GetUserID(ctx context.Context) (uuid.UUID, error) {
 	claims, err := GetUser(ctx)
 	if err != nil {
-		return 0, errors.New("invalid token")
+		return uuid.Nil, err
 	}
 
-	return claims.ID, nil
+	return uuid.Parse(claims.ID)
 }
 
 func VerifyToken(next echo.HandlerFunc) echo.HandlerFunc {

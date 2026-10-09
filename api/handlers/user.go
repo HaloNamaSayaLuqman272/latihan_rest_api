@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"latihan_rest_api/api/middlewares"
+	"latihan_rest_api/db/models"
 	"latihan_rest_api/pkg/dtos"
 	"latihan_rest_api/pkg/fileupload"
 	"latihan_rest_api/pkg/utils"
@@ -27,7 +28,7 @@ func (u Users) GetProfile(ctx *echo.Context) error {
 		})
 	}
 
-	user, err := u.users.GetProfile(ctx.Request().Context(), uint(userID))
+	user, err := u.users.GetProfile(ctx.Request().Context(), userID)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, dtos.Response[any]{
 			Status:  "failed",
@@ -93,7 +94,7 @@ func (u Users) UpdateProfile(ctx *echo.Context) error {
 	}
 	editReq.ProfilePicture = fileLink
 
-	user, err := u.users.UpdateProfile(ctx.Request().Context(), editReq, uint(userID))
+	user, err := u.users.UpdateProfile(ctx.Request().Context(), editReq, userID)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, dtos.Response[any]{
 			Status:  "failed",
@@ -101,7 +102,7 @@ func (u Users) UpdateProfile(ctx *echo.Context) error {
 		})
 	}
 
-	return ctx.JSON(http.StatusOK, dtos.Response[users.User]{
+	return ctx.JSON(http.StatusOK, dtos.Response[models.User]{
 		Status:  "success",
 		Message: "updated profile",
 		Data:    user,

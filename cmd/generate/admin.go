@@ -31,9 +31,11 @@ func main() {
 	}
 
 	var count int64
-	repository.Model(&models.User{}).Where("role = ?", models.Admin).Count(&count)
+	if err := repository.Model(&models.User{}).Where("role = ?", models.Admin).Count(&count).Error; err != nil {
+		log.Fatalf("failed to check existing admin: %v\n", err)
+	}
 	if count > 0 {
-		log.Println("admin already exist, skipping")
+		log.Println("admin already exists, skipping")
 		return
 	}
 
