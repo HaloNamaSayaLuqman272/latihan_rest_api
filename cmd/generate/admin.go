@@ -30,6 +30,13 @@ func main() {
 		log.Fatalf("failed to read admin address configurations: %v\n", err)
 	}
 
+	var count int64
+	repository.Model(&models.User{}).Where("role = ?", models.Admin).Count(&count)
+	if count > 0 {
+		log.Println("admin already exist, skipping")
+		return
+	}
+
 	password, err := bcrypt.GenerateFromPassword([]byte(utils.GetConfigurance(constant.ADMIN_PASSWORD)), bcrypt.DefaultCost)
 	if err != nil {
 		log.Fatalf("failed to create admin password: %v\n", err)
