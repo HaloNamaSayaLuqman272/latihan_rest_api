@@ -11,7 +11,6 @@ import (
 
 type User struct {
 	ID             uuid.UUID      `json:"id" form:"-" gorm:"type:uuid;primaryKey"`
-	SessionID      string         `json:"session_id"`
 	Username       string         `json:"username" gorm:"uniqueIndex;not null"`
 	Email          string         `json:"email" gorm:"uniqueIndex;not null"`
 	Password       string         `json:"-"`
