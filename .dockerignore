@@ -1,4 +1,25 @@
+# rahasia
 .env
-tmp/
-.git/
+.env.*
 .env.docker
+
+# artefak lokal
+tmp/
+*.test
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+
+# git dan editor
+.git/
+.gitignore
+.idea/
+.vscode/
+.DS_Store
+**/.DS_Store
+
+# file docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
