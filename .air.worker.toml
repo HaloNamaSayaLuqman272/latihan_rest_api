@@ -1,0 +1,11 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+    cmd = "go build -o ./tmp/worker ./cmd/worker"
+    bin = "./tmp/worker"
+    include_ext = ["go"]
+    exclude_dir = ["tmp", "docs"]
+    log = "build-errors-worker.log"
+    send_interrupt = true
+    kill_delay = "1s"
