@@ -7,6 +7,7 @@ import (
 	"latihan_rest_api/db/drivers"
 	"latihan_rest_api/pkg/constant"
 	"latihan_rest_api/pkg/fileupload"
+	"latihan_rest_api/pkg/rabbitmq"
 	"latihan_rest_api/pkg/utils"
 	"log"
 	"strconv"
@@ -35,10 +36,16 @@ func main() {
 		ExpireDuration: expireDuration,
 	}
 
+	mq, err := rabbitmq.New(utils.GetConfigurance(constant.RABBITMQ_URL))
+	if err != nil {
+		log.Fatalf("failed to connect rabbitmq: %v\n", err)
+	}
+	defer mq.Close()
+
 	var (
 		repository = dbConfig.InitDB()
 		cloudinary = cloudinaryConfig.InitCloudinary()
-		e          = api.NewEcho(repository, cloudinary, jwtConfig)
+		e          = api.NewEcho(repository, cloudinary, jwtConfig, mq)
 	)
 
 	drivers.MigrateDB(repository)

@@ -7,6 +7,7 @@ import (
 	"latihan_rest_api/auth"
 	"latihan_rest_api/pkg/constant"
 	"latihan_rest_api/pkg/fileupload"
+	"latihan_rest_api/pkg/rabbitmq"
 	"latihan_rest_api/users"
 
 	"github.com/cloudinary/cloudinary-go/v2"
@@ -17,7 +18,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewEcho(repository *gorm.DB, cld *cloudinary.Cloudinary, jwtConfig middlewares.JWTConfig) *echo.Echo {
+func NewEcho(repository *gorm.DB, cld *cloudinary.Cloudinary, jwtConfig middlewares.JWTConfig, mq rabbitmq.Publisher) *echo.Echo {
 	var (
 		e           = echo.New()
 		authService = auth.New(repository)
