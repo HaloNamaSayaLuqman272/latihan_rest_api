@@ -23,6 +23,8 @@ func main() {
 	}
 	defer mq.Close()
 
+	log.Println("worker started, waiting for messages")
+
 	err = mq.Consume(ctx, "notification.user_registered", events.UserRegistered,
 		func(ctx context.Context, body []byte) error {
 			var ev events.UserRegisteredEvent
