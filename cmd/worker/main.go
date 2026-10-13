@@ -32,7 +32,7 @@ func main() {
 				return err
 			}
 
-			log.Printf("send email wellcome to %s (%s)", ev.Username, ev.Email)
+			log.Printf("send email welcome to %s (%s)", ev.Username, ev.Email)
 			return nil
 		})
 
