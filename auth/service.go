@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"latihan_rest_api/db/models"
+	"latihan_rest_api/pkg/rabbitmq"
 
 	"gorm.io/gorm"
 )
@@ -19,9 +20,9 @@ type service struct {
 
 var _ Service = (*service)(nil)
 
-func New(repository *gorm.DB) Service {
+func New(repository *gorm.DB, mq rabbitmq.Publisher) Service {
 	return service{
-		register: register{repository: repository},
+		register: register{repository: repository, publisher: mq},
 		login:    login{repository: repository},
 	}
 }

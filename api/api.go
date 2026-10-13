@@ -21,7 +21,7 @@ import (
 func NewEcho(repository *gorm.DB, cld *cloudinary.Cloudinary, jwtConfig middlewares.JWTConfig, mq rabbitmq.Publisher) *echo.Echo {
 	var (
 		e           = echo.New()
-		authService = auth.New(repository)
+		authService = auth.New(repository, mq)
 		userService = users.New(repository)
 		uploader    = &fileupload.CloudinaryUploader{Cld: cld}
 		authHandler = handlers.NewAuth(authService, jwtConfig)
