@@ -41,6 +41,7 @@ func main() {
 		log.Fatalf("failed to connect rabbitmq: %v\n", err)
 	}
 	defer mq.Close()
+	log.Println("connected to rabbitmq")
 
 	var (
 		repository = dbConfig.InitDB()
