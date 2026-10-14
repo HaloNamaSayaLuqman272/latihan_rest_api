@@ -5,6 +5,7 @@ import (
 	"latihan_rest_api/api/handlers"
 	"latihan_rest_api/api/middlewares"
 	"latihan_rest_api/auth"
+	"latihan_rest_api/categories"
 	"latihan_rest_api/pkg/constant"
 	"latihan_rest_api/pkg/fileupload"
 	"latihan_rest_api/pkg/rabbitmq"
@@ -20,12 +21,14 @@ import (
 
 func NewEcho(repository *gorm.DB, cld *cloudinary.Cloudinary, jwtConfig middlewares.JWTConfig, mq rabbitmq.Publisher) *echo.Echo {
 	var (
-		e           = echo.New()
-		authService = auth.New(repository, mq)
-		userService = users.New(repository)
-		uploader    = &fileupload.CloudinaryUploader{Cld: cld}
-		authHandler = handlers.NewAuth(authService, jwtConfig)
-		userHandler = handlers.NewUsers(userService, uploader)
+		e                 = echo.New()
+		authService       = auth.New(repository, mq)
+		userService       = users.New(repository)
+		categoryService   = categories.New(repository)
+		uploader          = &fileupload.CloudinaryUploader{Cld: cld}
+		authHandler       = handlers.NewAuth(authService, jwtConfig)
+		usersHandler      = handlers.NewUsers(userService, uploader)
+		categoriesHandler = handlers.NewCategories(categoryService)
 	)
 
 	e.Validator = &middlewares.CustomValidator{
@@ -58,8 +61,16 @@ func NewEcho(repository *gorm.DB, cld *cloudinary.Cloudinary, jwtConfig middlewa
 
 	userRoutes := e.Group(constant.API_V1_PREFIX, echojwt.WithConfig(jwtMiddleware), middlewares.VerifyToken)
 
-	userRoutes.GET("/profile", userHandler.GetProfile)
-	userRoutes.PATCH("/profile/edit", userHandler.UpdateProfile)
+	userRoutes.GET("/profile", usersHandler.GetProfile)
+	userRoutes.PATCH("/profile/edit", usersHandler.UpdateProfile)
+
+	categoryRoutes := e.Group(constant.API_V1_PREFIX, echojwt.WithConfig(jwtMiddleware), middlewares.VerifyToken)
+
+	categoryRoutes.POST("/categories", categoriesHandler.CreateCategory, middlewares.VerifyAdmin, middlewares.ValidateBody(&categories.CategoryRequest{}))
+	categoryRoutes.GET("/categories/:id", categoriesHandler.GetCategoryByID)
+	categoryRoutes.GET("/categories", categoriesHandler.GetAllCategories)
+	categoryRoutes.PUT("/categories/:id", categoriesHandler.UpdateCategory, middlewares.VerifyAdmin, middlewares.ValidateBody(&categories.CategoryRequest{}))
+	categoryRoutes.DELETE("/categories/:id", categoriesHandler.DeleteCategory, middlewares.VerifyAdmin)
 
 	return e
 }
