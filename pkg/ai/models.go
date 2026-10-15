@@ -8,7 +8,7 @@ type ProductRecommendationRequest struct {
 
 type Product struct {
 	ID          uint    `json:"id"`
-	NameProduct string  `json:"name_product"`
+	ProductName string  `json:"product_name"`
 	Description string  `json:"description"`
 	CategoryID  uint    `json:"category_id"`
 	Price       float64 `json:"price"`
@@ -16,7 +16,7 @@ type Product struct {
 
 type ProductRecommendationResponse struct {
 	ID          uint    `json:"id"`
-	NameProduct string  `json:"name_product"`
+	ProductName string  `json:"product_name"`
 	CategoryID  uint    `json:"category_id"`
 	Description string  `json:"description"`
 	Company     string  `json:"company"`
