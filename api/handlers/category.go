@@ -20,7 +20,7 @@ func (c Categories) CreateCategory(ctx *echo.Context) error {
 
 	category, err := c.categories.CreateCategory(ctx.Request().Context(), categoryReq)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, dtos.Response[any]{
+		return ctx.JSON(http.StatusConflict, dtos.Response[any]{
 			Status:  "failed",
 			Message: "create category failed",
 		})
