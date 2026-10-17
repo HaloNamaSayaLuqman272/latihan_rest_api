@@ -12,7 +12,7 @@ import (
 type Service interface {
 	CreateProduct(ctx context.Context, productReq *ProductRequest) (models.Product, error)
 	GetProductByID(ctx context.Context, id uint) (models.Product, error)
-	GetProductsByCategory(ctx context.Context, pagination utils.Pagination, categoryID uint) (utils.Pagination, error)
+	GetProductsByCategory(ctx context.Context, pagination utils.Pagination, categoryId uint) (utils.Pagination, error)
 	GetAllProducts(ctx context.Context, pagination utils.Pagination) (utils.Pagination, error)
 	GetProductsByRecommendationAI(ctx context.Context, pagination utils.Pagination, promptReq ai.ProductRecommendationRequest) (utils.Pagination, error)
 	UpdateProduct(ctx context.Context, productReq *ProductRequest, id uint) (models.Product, error)

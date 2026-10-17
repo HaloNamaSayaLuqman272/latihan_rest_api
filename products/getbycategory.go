@@ -13,10 +13,10 @@ type getbycategory struct {
 	repository *gorm.DB
 }
 
-func (g getbycategory) GetProductsByCategory(ctx context.Context, pagination utils.Pagination, categoryID uint) (utils.Pagination, error) {
+func (g getbycategory) GetProductsByCategory(ctx context.Context, pagination utils.Pagination, categoryId uint) (utils.Pagination, error) {
 	products := []models.Product{}
 
-	if err := g.repository.WithContext(ctx).Scopes(utils.PaginateByProductCategory(&products, &pagination, categoryID, g.repository)).Preload(clause.Associations).Find(&products).Error; err != nil {
+	if err := g.repository.WithContext(ctx).Scopes(utils.PaginateByProductCategory(&products, &pagination, categoryId, g.repository)).Preload(clause.Associations).Find(&products).Error; err != nil {
 		return utils.Pagination{}, err
 	}
 

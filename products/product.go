@@ -6,16 +6,16 @@ import (
 )
 
 type ProductRequest struct {
-	ProductName string          `json:"product_name" validate:"required"`
-	CategoryID  uint            `json:"category_id" validate:"required"`
-	Category    models.Category `json:"category" validate:"required"`
-	Description string          `json:"description" validate:"required"`
-	Company     string          `json:"company" validate:"required"`
-	Barcode     string          `json:"barcode"`
-	Weight      uint            `json:"weight" validate:"required"`
-	ExpiredDate string          `json:"expired_date"`
-	Price       float64         `json:"price" validate:"required"`
-	Stock       uint            `json:"stock" validate:"required"`
+	ProductName string          `form:"product_name" validate:"required"`
+	CategoryID  uint            `form:"category_id" validate:"required"`
+	Category    models.Category `form:"category" validate:"required"`
+	Description string          `form:"description" validate:"required"`
+	Company     string          `form:"company" validate:"required"`
+	Barcode     string          `form:"barcode"`
+	Weight      uint            `form:"weight" validate:"required"`
+	ExpiredDate string          `form:"expired_date"`
+	Price       float64         `form:"price" validate:"required"`
+	Stock       uint            `form:"stock" validate:"required"`
 	ImageLink   string
 	File        *multipart.FileHeader
 }
