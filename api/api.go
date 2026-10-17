@@ -6,9 +6,11 @@ import (
 	"latihan_rest_api/api/middlewares"
 	"latihan_rest_api/auth"
 	"latihan_rest_api/categories"
+	"latihan_rest_api/pkg/ai"
 	"latihan_rest_api/pkg/constant"
 	"latihan_rest_api/pkg/fileupload"
 	"latihan_rest_api/pkg/rabbitmq"
+	"latihan_rest_api/products"
 	"latihan_rest_api/users"
 
 	"github.com/cloudinary/cloudinary-go/v2"
@@ -25,10 +27,13 @@ func NewEcho(repository *gorm.DB, cld *cloudinary.Cloudinary, jwtConfig middlewa
 		authService       = auth.New(repository, mq)
 		userService       = users.New(repository)
 		categoryService   = categories.New(repository)
+		productService    = products.New(repository)
+		aiService         = ai.InitService()
 		uploader          = &fileupload.CloudinaryUploader{Cld: cld}
 		authHandler       = handlers.NewAuth(authService, jwtConfig)
 		usersHandler      = handlers.NewUsers(userService, uploader)
 		categoriesHandler = handlers.NewCategories(categoryService)
+		productsHandler   = handlers.NewProducts(productService, uploader, aiService)
 	)
 
 	e.Validator = &middlewares.CustomValidator{
@@ -71,6 +76,16 @@ func NewEcho(repository *gorm.DB, cld *cloudinary.Cloudinary, jwtConfig middlewa
 	categoryRoutes.GET("/categories", categoriesHandler.GetAllCategories)
 	categoryRoutes.PUT("/categories/:id", categoriesHandler.UpdateCategory, middlewares.VerifyAdmin, middlewares.ValidateBody(&categories.CategoryRequest{}))
 	categoryRoutes.DELETE("/categories/:id", categoriesHandler.DeleteCategory, middlewares.VerifyAdmin)
+
+	productRoutes := e.Group(constant.API_V1_PREFIX, echojwt.WithConfig(jwtMiddleware), middlewares.VerifyToken)
+
+	productRoutes.POST("/products", productsHandler.CreateProduct, middlewares.VerifyAdmin, middlewares.ValidateBody(&products.ProductRequest{}))
+	productRoutes.GET("/products/:id", productsHandler.GetProductByID)
+	productRoutes.GET("/products/category/:id", productsHandler.GetProductsByCategory)
+	productRoutes.GET("/products", productsHandler.GetAllProducts)
+	productRoutes.POST("/products/recommendation", productsHandler.GetProductsByRecommendationAI, middlewares.ValidateBody(&ai.ProductRecommendationRequest{}))
+	productRoutes.PUT("/products/:id", productsHandler.UpdateProduct, middlewares.VerifyAdmin, middlewares.ValidateBody(&products.ProductRequest{}))
+	productRoutes.DELETE("/products/:id", productsHandler.DeleteProduct, middlewares.VerifyAdmin)
 
 	return e
 }

@@ -98,8 +98,8 @@ func (p Products) GetProductsByCategory(ctx *echo.Context) error {
 	sort := ctx.QueryParam("sort")
 	search := ctx.QueryParam("search")
 
-	categoryIDParam := ctx.Param("id")
-	categoryID, err := strconv.ParseUint(categoryIDParam, 10, 65)
+	categoryIdParam := ctx.Param("id")
+	categoryId, err := strconv.ParseUint(categoryIdParam, 10, 64)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, dtos.Response[any]{
 			Status:  "failed",
@@ -115,7 +115,7 @@ func (p Products) GetProductsByCategory(ctx *echo.Context) error {
 		Keyword: "product_name",
 	}
 
-	productData, err := p.products.GetProductsByCategory(ctx.Request().Context(), pagination, uint(categoryID))
+	productData, err := p.products.GetProductsByCategory(ctx.Request().Context(), pagination, uint(categoryId))
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, dtos.Response[any]{
 			Status:  "failed",
