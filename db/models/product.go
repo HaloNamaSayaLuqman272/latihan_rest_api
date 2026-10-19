@@ -7,7 +7,7 @@ import (
 )
 
 type Product struct {
-	ID          uint           `json:"id" gorm:"primaryKey"`
+	ProductID   uint           `json:"product_id" gorm:"primaryKey"`
 	ProductName string         `json:"product_name"`
 	CategoryID  uint           `json:"category_id"`
 	Category    Category       `json:"category"`
