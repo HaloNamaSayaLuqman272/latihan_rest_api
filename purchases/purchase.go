@@ -21,3 +21,7 @@ type PurchaseRequest struct {
 	Total             float64 // fee + amount
 	EstimatedDelivery uint
 }
+
+type UpdatePurchaseRequest struct {
+	Status string `json:"status" validate:"required"`
+}
